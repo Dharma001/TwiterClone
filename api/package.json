@@ -8,6 +8,9 @@
     "dev": "nodemon --exec ts-node src/index.ts",
     "build": "npm run clean && tsc",
     "clean": "rm -rf dist",
+    "merge-schema": "node helpers/mergeSchemas.js",
+    "prisma:generate": "npm run merge-schema && npx prisma generate",
+    "prisma:migrate": "npm run merge-schema && npx prisma migrate dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

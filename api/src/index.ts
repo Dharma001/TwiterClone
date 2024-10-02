@@ -4,6 +4,8 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import { connectToDatabase, disconnectDatabase } from './utils/database';
 import http from 'http';
+import routes from './routes';
+import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
 
@@ -14,18 +16,13 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (req: Request, res: Response) => {
-    res.status(200).send('API is running!');
-});
+app.use('/', routes);
 
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, res: Response) => {
     res.status(404).json({ message: 'Not Found' });
 });
 
-app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
-    console.error(err instanceof Error ? err.stack : err);
-    res.status(500).json({ message: 'Internal Server Error' });
-});
+app.use(errorHandler);
 
 const startServer = async (): Promise<void> => {
     try {
