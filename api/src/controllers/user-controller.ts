@@ -56,5 +56,4 @@ export class UserController {
             res.status(500).json(ResponseHelper.error('Unable to create user. Please try again later.'));
         }
     }
-    
 }
