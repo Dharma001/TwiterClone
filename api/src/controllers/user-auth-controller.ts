@@ -52,7 +52,7 @@ export class UserAuthController {
         }
 
         try {
-            const token: string = await this.userAuthService.login(loginData); // Corrected to use this.userAuthService
+            const token: string = await this.userAuthService.login(loginData);
             res.status(200).json(ResponseHelper.success({ token }, 'Login successful'));
         } catch (error) {
             console.error('Error in login:', error);

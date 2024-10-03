@@ -2,7 +2,6 @@ import Joi from 'joi';
 import { IUserService } from '../contracts/IUserService';
 import { UserRegisterRequestDTO } from '../dtos/users/auth/register-request-dto';
 
-// Define Joi schema for validating user registration
 const userRegisterSchema = Joi.object({
     name: Joi.string().required().messages({
         'string.base': '"name" should be a type of text',
@@ -10,7 +9,7 @@ const userRegisterSchema = Joi.object({
         'any.required': '"name" is a required field',
     }),
     email: Joi.string()
-        .email({ tlds: { allow: false } }) // Disable top-level domain (tld) validation if unnecessary
+        .email({ tlds: { allow: false } })
         .required()
         .messages({
             'string.base': '"email" should be a type of text',
@@ -28,7 +27,7 @@ const userRegisterSchema = Joi.object({
             'any.required': '"password" is a required field',
         }),
     confirmPassword: Joi.string()
-        .valid(Joi.ref('password')) // Ensure confirmPassword matches password
+        .valid(Joi.ref('password'))
         .required()
         .messages({
             'any.only': '"confirmPassword" must match "password"',
@@ -36,25 +35,23 @@ const userRegisterSchema = Joi.object({
         }),
 });
 
-// Function to validate user registration
+
 export const validateUserRegistration = async (dto: UserRegisterRequestDTO, userService: IUserService) => {
     const { error } = userRegisterSchema.validate(dto, { abortEarly: false });
     
     if (error) {
         const validationErrors: Record<string, string[]> = {};
-        // Collect all validation errors from Joi
         error.details.forEach((detail) => {
-            const key = detail.path.join('.'); // Access the field that caused the error
+            const key = detail.path.join('.');
             if (!validationErrors[key]) {
                 validationErrors[key] = [];
             }
-            validationErrors[key].push(detail.message); // Add error message to that field
+            validationErrors[key].push(detail.message);
         });
 
-        return { valid: false, errors: validationErrors }; // Return the validation errors
+        return { valid: false, errors: validationErrors };
     }
 
-    // Check if the email is already in use
     const existingUser = await userService.getUserByEmail(dto.email);
     if (existingUser) {
         return {
@@ -63,5 +60,5 @@ export const validateUserRegistration = async (dto: UserRegisterRequestDTO, user
         };
     }
 
-    return { valid: true }; // If everything is valid, return true
+    return { valid: true };
 };
