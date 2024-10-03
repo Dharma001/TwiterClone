@@ -1,5 +1,3 @@
-// src/controllers/UserController.ts
-
 import { Request, Response } from 'express';
 import { IUserService } from '../contracts/IUserService';
 import { UserRequestDTO } from '../dtos/users/user-request-dto';

@@ -1,5 +1,3 @@
-// src/controllers/UserAuthController.ts
-
 import { Request, Response } from 'express';
 import { IUserAuthService } from '../contracts/IUserAuthService';
 import { IUserService } from '../contracts/IUserService';

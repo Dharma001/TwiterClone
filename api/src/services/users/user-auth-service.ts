@@ -1,5 +1,3 @@
-// src/services/UserAuthService.ts
-
 import { IUserAuthService } from '../../contracts/IUserAuthService';
 import { UserRegisterRequestDTO } from '../../dtos/users/auth/register-request-dto';
 import { UserLoginRequestDTO } from '../../dtos/users/auth/login-request-dto';
