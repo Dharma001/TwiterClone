@@ -5,7 +5,6 @@ import cors from 'cors';
 import { connectToDatabase, disconnectDatabase } from './utils/database';
 import http from 'http';
 import routes from './routes';
-import Joi from 'joi';
 import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
@@ -49,7 +48,5 @@ const startServer = async (): Promise<void> => {
         process.exit(1);
     }
 };
-
-export { Joi };
 
 startServer();
