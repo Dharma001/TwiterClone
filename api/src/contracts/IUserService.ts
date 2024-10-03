@@ -1,4 +1,3 @@
-// src/contracts/IUserService.ts
 import { UserRequestDTO } from '../dtos/users/user-request-dto';
 import { UserResponseDTO } from '../dtos/users/user-response-dto';
 

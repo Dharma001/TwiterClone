@@ -2,18 +2,22 @@
 
 import { Request, Response } from 'express';
 import { IUserService } from '../contracts/IUserService';
-import { UserService } from '../services/user-service';
 import { UserRequestDTO } from '../dtos/users/user-request-dto';
 import { UserResponseDTO } from '../dtos/users/user-response-dto';
 import { ResponseHelper } from '../../helpers/response-helper';
 import { validateUser } from '../validations/user-validation';
-
-const userService: IUserService = new UserService();
+import { container } from '../di/container'; // Import the DI container
 
 export class UserController {
+    private userService: IUserService;
+
+    constructor() {
+        this.userService = container.get<IUserService>('IUserService'); // Get the IUserService instance
+    }
+
     async getAllUsers(req: Request, res: Response): Promise<void> {
         try {
-            const users: UserResponseDTO[] = await userService.getAllUsers();
+            const users: UserResponseDTO[] = await this.userService.getAllUsers();
             res.status(200).json(ResponseHelper.success(users, 'Users fetched successfully'));
         } catch (error) {
             console.error('Error in getAllUsers:', error);
@@ -25,7 +29,7 @@ export class UserController {
         const userId: number = parseInt(req.params.id);
 
         try {
-            const user: UserResponseDTO | null = await userService.getUserById(userId);
+            const user: UserResponseDTO | null = await this.userService.getUserById(userId);
             if (!user) {
                 res.status(404).json(ResponseHelper.error('User not found.', 404));
                 return;
@@ -40,7 +44,7 @@ export class UserController {
     async createUser(req: Request, res: Response): Promise<void> {
         const userData: UserRequestDTO = req.body;
     
-        const validation = await validateUser(userData, userService);
+        const validation = await validateUser(userData, this.userService);
     
         if (!validation.valid) {
             const validationErrors = validation.errors ?? {};
@@ -49,7 +53,7 @@ export class UserController {
         }
     
         try {
-            const newUser: UserResponseDTO = await userService.createUser(userData);
+            const newUser: UserResponseDTO = await this.userService.createUser(userData);
             res.status(201).json(ResponseHelper.success(newUser, 'User created successfully'));
         } catch (error) {
             console.error('Error in createUser:', error);
