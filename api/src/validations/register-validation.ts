@@ -35,7 +35,11 @@ const userRegisterSchema = Joi.object({
         }),
 });
 
-
+/**
+ * Validates the user register request DTO.
+ * @param dto - The UserRegisterRequestDTO containing register information.
+ * @returns An object indicating whether validation succeeded and any validation errors.
+ */
 export const validateUserRegistration = async (dto: UserRegisterRequestDTO, userService: IUserService) => {
     const { error } = userRegisterSchema.validate(dto, { abortEarly: false });
     

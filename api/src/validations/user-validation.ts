@@ -38,6 +38,11 @@ const userSchema = Joi.object({
     }),
 });
 
+/**
+ * Validates the user store/update request DTO.
+ * @param dto - The UserRequestDTO containing create/update information.
+ * @returns An object indicating whether validation succeeded and any validation errors.
+ */
 export const validateUser = async (dto: UserRequestDTO, userService: IUserService) => {
     const { error } = userSchema.validate(dto, { abortEarly: false });
     if (error) {

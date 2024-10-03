@@ -1,4 +1,3 @@
-// src/validators/userLoginValidator.ts
 import Joi from 'joi';
 import { UserLoginRequestDTO } from '../dtos/users/auth/login-request-dto';
 
