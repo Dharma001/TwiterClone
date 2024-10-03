@@ -2,7 +2,7 @@
 
 ## Overview
 
-Welcome to the **Twitter Clone** project! This is a practice project designed to enhance my skills and gain hands-on experience with a modern technology stack, including React.js, Node.js, Express.js, MySQL, Prisma ORM, and Docker.
+Welcome to the **Twitter Clone** project! This is a practice project designed to enhance my skills and gain hands-on experience with a modern technology stack, including **React.js**, **Node.js**, **Express.js**, **MySQL**, **Prisma ORM**, **TypeScript**, and **Docker**.
 
 ## Project Goals
 
@@ -18,8 +18,8 @@ The primary goals of this project are to:
 
 This project utilizes the following technologies:
 
-- **Frontend:** React.js
-- **Backend:** Node.js with Express.js
+- **Frontend:** React.js (with TypeScript)
+- **Backend:** Node.js (with TypeScript) and Express.js
 - **Database:** MySQL
 - **ORM:** Prisma
 - **Containerization:** Docker
@@ -34,3 +34,5 @@ This project utilizes the following technologies:
 ## Getting Started
 
 To run this project locally, follow these steps:
+
+1. **Clone the repository:**
