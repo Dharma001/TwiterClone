@@ -6,13 +6,13 @@ import { UserRequestDTO } from '../dtos/users/user-request-dto';
 import { UserResponseDTO } from '../dtos/users/user-response-dto';
 import { ResponseHelper } from '../../helpers/response-helper';
 import { validateUser } from '../validations/user-validation';
-import { container } from '../di/container'; // Import the DI container
+import { container } from '../di/container';
 
 export class UserController {
     private userService: IUserService;
 
     constructor() {
-        this.userService = container.get<IUserService>('IUserService'); // Get the IUserService instance
+        this.userService = container.get<IUserService>('IUserService'); 
     }
 
     async getAllUsers(req: Request, res: Response): Promise<void> {

@@ -4,7 +4,7 @@ import { UserLoginRequestDTO } from '../dtos/users/auth/login-request-dto';
 
 const userLoginSchema = Joi.object({
     email: Joi.string()
-        .email({ tlds: { allow: false } }) // Disallow top-level domains
+        .email({ tlds: { allow: false } })
         .required()
         .messages({
             'string.base': '"email" should be a type of text',
@@ -27,22 +27,21 @@ const userLoginSchema = Joi.object({
  * @returns An object indicating whether validation succeeded and any validation errors.
  */
 export const validateUserLogin = async (dto: UserLoginRequestDTO) => {
-    const { error } = userLoginSchema.validate(dto, { abortEarly: false }); // Validate and collect all errors
+    const { error } = userLoginSchema.validate(dto, { abortEarly: false });
     
     if (error) {
         const validationErrors: Record<string, string[]> = {};
 
-        // Process each error detail and group them by field
         error.details.forEach((detail) => {
-            const key = detail.path.join('.'); // Get the key of the error
+            const key = detail.path.join('.');
             if (!validationErrors[key]) {
                 validationErrors[key] = [];
             }
-            validationErrors[key].push(detail.message); // Push the error message
+            validationErrors[key].push(detail.message);
         });
 
-        return { valid: false, errors: validationErrors }; // Return errors if validation fails
+        return { valid: false, errors: validationErrors };
     }
 
-    return { valid: true }; // Return success if validation passes
+    return { valid: true };
 };

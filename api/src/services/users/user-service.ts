@@ -29,7 +29,6 @@ export class UserService implements IUserService {
 
     async createUser(userData: UserRequestDTO): Promise<UserResponseDTO> {
         try {
-            // Create an object for storing new user data
             const newUserData: any = {
                 name: userData.name,
                 email: userData.email,
@@ -39,13 +38,11 @@ export class UserService implements IUserService {
                 status: userData.status ?? 1,
             };
     
-            // Hash the password if provided and add it to newUserData
             if (userData.password) {
                 const salt = await bcrypt.genSalt(10);
                 newUserData.password = await bcrypt.hash(userData.password, salt);
             }
     
-            // Create the user using Prisma
             const newUser = await prisma.user.create({
                 data: newUserData,
             });
