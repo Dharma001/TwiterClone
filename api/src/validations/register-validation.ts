@@ -1,15 +1,15 @@
 import Joi from 'joi';
 import { IUserService } from '../contracts/IUserService';
-import { UserRequestDTO } from '../dtos/users/user-request-dto';
+import { UserRegisterRequestDTO } from '../dtos/users/auth/register-request-dto';
 
-const userSchema = Joi.object({
+const userRegisterSchema = Joi.object({
     name: Joi.string().required().messages({
         'string.base': '"name" should be a type of text',
         'string.empty': '"name" cannot be an empty field',
         'any.required': '"name" is a required field',
     }),
     email: Joi.string()
-        .email({ tlds: { allow: false } }) 
+        .email({ tlds: { allow: false } })
         .required()
         .messages({
             'string.base': '"email" should be a type of text',
@@ -23,31 +23,28 @@ const userSchema = Joi.object({
         .messages({
             'string.base': '"password" should be a type of text',
             'string.empty': '"password" cannot be an empty field',
-            'string.min': '"password" should be at least 6 characters long',
+            'string.min': '"password" should have a minimum length of 6 characters',
             'any.required': '"password" is a required field',
         }),
-    image: Joi.string().optional().allow(''),
-    phone: Joi.string().optional().allow(''),
-    isAdmin: Joi.number().integer().valid(0, 1).optional().default(0).messages({
-        'number.base': '"isAdmin" should be a type of integer',
-        'any.only': '"isAdmin" must be either 0 (not admin) or 1 (admin)',
-    }),
-    status: Joi.number().integer().valid(0, 1).optional().default(1).messages({
-        'number.base': '"status" should be a type of integer',
-        'any.only': '"status" must be either 0 (inactive) or 1 (active)',
-    }),
+    confirmPassword: Joi.string()
+        .valid(Joi.ref('password'))
+        .required()
+        .messages({
+            'any.only': '"confirmPassword" must match "password"',
+            'any.required': '"confirmPassword" is a required field',
+        }),
 });
 
 /**
- * Validates the user store/update request DTO.
- * @param dto - The UserRequestDTO containing create/update information.
+ * Validates the user register request DTO.
+ * @param dto - The UserRegisterRequestDTO containing register information.
  * @returns An object indicating whether validation succeeded and any validation errors.
  */
-export const validateUser = async (dto: UserRequestDTO, userService: IUserService) => {
-    const { error } = userSchema.validate(dto, { abortEarly: false });
+export const validateUserRegistration = async (dto: UserRegisterRequestDTO, userService: IUserService) => {
+    const { error } = userRegisterSchema.validate(dto, { abortEarly: false });
+    
     if (error) {
         const validationErrors: Record<string, string[]> = {};
-        
         error.details.forEach((detail) => {
             const key = detail.path.join('.');
             if (!validationErrors[key]) {
@@ -63,9 +60,7 @@ export const validateUser = async (dto: UserRequestDTO, userService: IUserServic
     if (existingUser) {
         return {
             valid: false,
-            errors: {
-                email: ['The provided email address is already associated with another account. Please use a different email.'],
-            },
+            errors: { email: ['The provided email address is already associated with another account. Please use a different email.'] },
         };
     }
 
