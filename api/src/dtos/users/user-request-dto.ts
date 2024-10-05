@@ -4,8 +4,8 @@ export interface UserRequestDTO {
   password?: string;             
   image?: string;                 
   phone?: string;                
-  isAdmin?: number;               
+  is_admin?: number;               
   status?: number;               
-  emailVerifiedAt?: Date | null; 
-  rememberToken?: string | null; 
+  email_verified_at?: Date | null; 
+  remember_token?: string | null; 
 }
