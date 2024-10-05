@@ -8,6 +8,8 @@ import { ResponseHelper } from '../../helpers/response-helper';
 import { validateUserRegistration } from '../validations/register-validation';
 import { validateUserLogin } from '../validations/login-validation';
 import { container } from '../di/container';
+import { UserOtpRequestDTO } from '../dtos/users/auth/otp-request-dto';
+import { validateUserOtp } from '../validations/otp-validation';
 
 export class UserAuthController {
     private userAuthService: IUserAuthService;
@@ -35,6 +37,26 @@ export class UserAuthController {
         } catch (error) {
             console.error('Error in register:', error);
             res.status(500).json(ResponseHelper.error('Unable to register user. Please try again later.'));
+        }
+    }
+
+    async verifyOtp(req: Request, res: Response): Promise<void> {
+        const otpData: UserOtpRequestDTO = req.body;
+    
+        const validation = await validateUserOtp(otpData, this.userService);
+    
+        if (!validation.valid) {
+            const validationErrors = validation.errors ?? {};
+            res.status(400).json(ResponseHelper.validationError(validationErrors));
+            return;
+        }
+    
+        try {
+            const otp: string = await this.userAuthService.verifyOtp(otpData);
+            res.status(200).json(ResponseHelper.success({ otp }, 'Verified successfully'));
+        } catch (error) {
+            console.error('Error while verifying otp:', error);
+            res.status(401).json(ResponseHelper.error('Invalid email or OTP'));
         }
     }
 
