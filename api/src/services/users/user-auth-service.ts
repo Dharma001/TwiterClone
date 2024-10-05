@@ -101,9 +101,12 @@ export class UserAuthService implements IUserAuthService {
               throw new Error('Invalid credentials');
           }
   
-          const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
-  
-          return token;
+          if (user.email_verified_at) {
+            const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+            return token;
+        } else {
+            throw new Error('Your account is not verified!!');
+        }
       } catch (error) {
           console.error('Error during login:', error);
           throw new Error('Unable to login. Please check your credentials and try again.');

@@ -72,8 +72,13 @@ export class UserAuthController {
         }
 
         try {
-            const token: string = await this.userAuthService.login(loginData);
-            res.status(200).json(ResponseHelper.success({ token }, 'Login successful'));
+            const token: string | null = await this.userAuthService.login(loginData);
+
+            if (token) {
+                res.status(200).json(ResponseHelper.success({ token }, 'Login successful'));
+            } else {
+                res.status(400).json(ResponseHelper.error('Invalid login credentials.'));
+            }
         } catch (error) {
             console.error('Error in login:', error);
             res.status(401).json(ResponseHelper.error('Invalid email or password.'));
