@@ -1,7 +1,10 @@
-// src/components/Login.tsx
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import Loading from '../../components/common/Loading';
+import useLoading from '../../hooks/useLoading';
 
 interface FormData {
   email: string;
@@ -11,14 +14,20 @@ interface FormData {
 const Login: React.FC = () => {
   const { login, loading, error } = useAuth();
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const isLoading = useSelector((state: RootState) => state.loading.isLoading); 
+
+  const { isInitialLoading } = useLoading(1000);
 
   const onSubmit = async (data: FormData) => {
     await login(data.email, data.password);
   };
 
+  if (isInitialLoading || isLoading) {
+      return <Loading />;
+  }
   return (
-    <div>
-      <h1>Login</h1>
+    <>      
+      <div className="bg-black w-full h-screen">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <input
@@ -43,7 +52,8 @@ const Login: React.FC = () => {
         </button>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
+      </div>
+    </>
   );
 };
 

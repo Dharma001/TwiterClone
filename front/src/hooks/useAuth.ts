@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { loginUser, registerUser } from '../api/authApi';
 import { toast } from 'react-toastify';
 
-import 'react-toastify/dist/ReactToastify.css';
-
 export const useAuth = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -14,7 +12,7 @@ export const useAuth = () => {
         try {
             const data = await loginUser(email, password);
             console.log(data)
-            toast("Wow so easy !");
+            toast(data.message);
             return data; 
         } catch {
             setError('Login failed. Please check your credentials.');
