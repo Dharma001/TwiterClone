@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { sendMail } from '../email-service';
 import crypto from 'crypto';
+import { UserOtpRequestDTO } from '../../dtos/users/auth/otp-request-dto';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_key';
@@ -49,6 +50,39 @@ export class UserAuthService implements IUserAuthService {
         } catch (error) {
             console.error('Error during registration:', error);
             throw new Error('Unable to register user. Please try again later.');
+        }
+    }
+
+    async verifyOtp(otpData: UserOtpRequestDTO): Promise<string> {
+        try {
+            const otpEmail = await prisma.otp.findFirst({
+                where: { email: otpData.email },
+                orderBy: { created_at: 'desc' },
+            });
+    
+            const user = await prisma.user.findUnique({
+                where: { email: otpData.email },
+            });
+    
+            if (!otpEmail || !user) {
+                throw new Error('Invalid Credentials');
+            }
+    
+            if (otpEmail) {
+                await prisma.user.update({
+                    where: { email: otpData.email },
+                    data: {
+                        email_verified_at: new Date(),
+                    },
+                });
+    
+                return 'OTP verified successfully!';
+            } else {
+                throw new Error('Invalid OTP provided.');
+            }
+        } catch (error) {
+            console.error('Error during OTP verification:', error);
+            throw new Error('Unable to verify OTP. Please check your credentials and try again.');
         }
     }
 

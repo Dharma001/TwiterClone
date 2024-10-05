@@ -1,4 +1,3 @@
-// config/mail.ts
 export const mailConfig = {
   host: process.env.EMAIL_HOST || 'smtp.mailtrap.io',
   port: Number(process.env.EMAIL_PORT) || 2525,
