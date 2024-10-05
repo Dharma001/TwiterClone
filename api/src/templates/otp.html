@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f6f6;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 20px;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .content {
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #888888;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Your OTP Code</h1>
+        </div>
+        <div class="content">
+            <p>Hello,</p>
+            <p>Your OTP code is: <strong>{{otp}}</strong></p>
+            <p>Please use this code to complete your transaction.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 MyCompany</p>
+        </div>
+    </div>
+</body>
+</html>

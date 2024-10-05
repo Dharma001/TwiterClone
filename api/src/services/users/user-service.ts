@@ -9,7 +9,16 @@ const prisma = new PrismaClient();
 export class UserService implements IUserService {
     async getAllUsers(): Promise<UserResponseDTO[]> {
         try {
-            const users = await prisma.user.findMany();
+            const users = await prisma.user.findMany({
+                where: {
+                    status: 1,
+                },
+                orderBy: {
+                    created_at: 'desc',
+                },
+                take: 10,
+                skip: 0,
+            });
             return users.map(user => new UserResponseDTO(user));
         } catch (error) {
             console.error('Error fetching all users:', error);
@@ -34,7 +43,7 @@ export class UserService implements IUserService {
                 email: userData.email,
                 image: userData.image || undefined,
                 phone: userData.phone || undefined,
-                isAdmin: userData.isAdmin ?? 0,
+                is_admin: userData.is_admin ?? 0,
                 status: userData.status ?? 1,
             };
     

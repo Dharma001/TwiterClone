@@ -5,29 +5,45 @@ import { UserResponseDTO } from '../../dtos/users/user-response-dto';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { sendMail } from '../email-service';
+import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_key';
 
 export class UserAuthService implements IUserAuthService {
+    private generateOtp(): string {
+        // return crypto.randomBytes(3).toString('hex').toUpperCase(); // uncomment this if you want to get in mail
+        return 'FED2CB'
+    }
+
     async register(userData: UserRegisterRequestDTO): Promise<UserResponseDTO> {
         try {
-            if (userData.password !== userData.confirmPassword) {
-                throw new Error('Passwords do not match');
-            }
-
             const newUserData: any = {
                 name: userData.name,
                 email: userData.email,
             };
 
             if (userData.password) {
-              const salt = await bcrypt.genSalt(10);
-              newUserData.password = await bcrypt.hash(userData.password, salt);
-          }
+                const salt = await bcrypt.genSalt(10);
+                newUserData.password = await bcrypt.hash(userData.password, salt);
+            }
+
             const newUser = await prisma.user.create({
                 data: newUserData,
             });
+
+            const otp = this.generateOtp();
+
+            const newOtpData: any = {
+                email: userData.email,
+                otp: otp,
+            }
+            await prisma.otp.create({
+                data: newOtpData,
+            });
+
+            sendMail(newUser.email, 'Your OTP Code', 'otp', { otp });
 
             return new UserResponseDTO(newUser);
         } catch (error) {
