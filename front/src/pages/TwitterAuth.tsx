@@ -1,9 +1,16 @@
 import React from 'react';
 
 const TwitterAuth: React.FC = () => {
+
+  const welcomeValue = localStorage.getItem('welcome');
+
+  const handleSetWelcome = () => {
+    localStorage.setItem('welcome', 'true');
+    window.location.reload(); 
+  };
   return(
     <>
-    <div className="bg-black w-full h-screen -z-10 flex flex-col lg:gap-12 lg:flex-row lg:p-0 relative">
+    <div className="bg-black w-full h-screen -z-10 flex flex-col lg:gap-12 lg:flex-row lg:p-0">
       <div className="flex w-full lg:gap-12 justify-center p-8 items-center flex-col lg:flex-row pt-14">
         <div className=" w-full px-2 py-8 lg:w-[45%] flex items-center justify-start lg:justify-center">
         <svg
@@ -86,11 +93,15 @@ const TwitterAuth: React.FC = () => {
                     <span>© 2024 X Corp</span>
                   </p>
                 </div>
-                <div className="absolute bottom-0 py-4 w-full border-t border-gray-600 bg-black text-gray-500 flex items-center justify-center z-1000">
-              <div className=" w-[98%] lg:w-[50%] grid px-3 grid-cols-8 py-1 gap-2">
+                {!welcomeValue ? (
+                <div className="absolute bottom-0 py-4 w-full border-t border-gray-600 bg-black text-gray-500 flex items-center justify-center z-50">
+              <div className=" w-[98%] z-10000 lg:w-[50%] grid px-3 grid-cols-8 py-1 gap-2">
                 <div className="flex col-span-8 lg:col-span-8 justify-between">
                 <h4 className='font-semibold text-white text-[20px] lg:text-[22px]'>Welcome to x.com!</h4> 
-                <button className='border rounded-3xl border-gray-500 px-[15px] text-white py-[6px]'>
+                <button 
+                  onClick={handleSetWelcome} 
+                  className='border rounded-3xl border-gray-500 px-[15px] cursor-pointer text-white py-[6px]'
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" width="1.3rem" height="1.3rem" viewBox="0 0 24 24"><g fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M5.47 5.47a.75.75 0 0 1 1.06 0l12 12a.75.75 0 1 1-1.06 1.06l-12-12a.75.75 0 0 1 0-1.06"/><path d="M18.53 5.47a.75.75 0 0 1 0 1.06l-12 12a.75.75 0 0 1-1.06-1.06l12-12a.75.75 0 0 1 1.06 0"/></g></svg>
                     </button>
                 </div>
@@ -98,6 +109,9 @@ const TwitterAuth: React.FC = () => {
                     For more details, see our Privacy Policy: <a className='text-purple-600' href="https://x.com/en/privacy">https://x.com/en/privacy</a></p>
               </div>
                 </div>
+                ) : (
+                  ''
+                )}
             </div>
           </>
   );
