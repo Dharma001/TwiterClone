@@ -1,8 +1,19 @@
-import React from 'react';
+import React , { useState} from 'react';
+import Register from './Auth/RegisterForm';
 
 const TwitterAuth: React.FC = () => {
 
   const welcomeValue: string | null = localStorage.getItem('welcome');
+
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+
+  const handleOpenRegister = () => {
+    setIsRegisterOpen(true);
+  };
+
+  const handleCloseRegister = () => {
+    setIsRegisterOpen(false);
+  };
 
   const handleGoogleLogin = () => {
     const width = 500;
@@ -92,9 +103,10 @@ const TwitterAuth: React.FC = () => {
               <p className='text-gray-300 font-medium text-[14px]'>or</p>
               <div className="w-1/2 border-b border-gray-800 h-1"></div>
             </div>
-            <button className='flex items-center text-white bg-[#1D9BF0] w-full py-[9px] justify-center text-[15px] font-bold rounded-3xl'>
+            <button onClick={handleOpenRegister}  className='flex items-center text-white bg-[#1D9BF0] w-full py-[9px] justify-center text-[15px] font-bold rounded-3xl'>
               Create account
             </button>
+            {isRegisterOpen && <Register onClose={handleCloseRegister} />}
               <p className='text-gray-500 ml-1 my-1.5 text-[11px]'>By signing up, you agree to the <span className='text-[#1D9BF0]'>Terms of Service</span> and <span className='text-[#1D9BF0]'>Privacy Policy</span> , including <span className='text-[#1D9BF0]'>Cookie Use</span>.</p>
               <div className="space-y-4">
                   <p className='text-white text-lg mt-14 font-semibold'>Already have an account?</p>
