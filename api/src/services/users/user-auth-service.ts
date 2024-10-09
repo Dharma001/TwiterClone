@@ -15,7 +15,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret_key';
 export class UserAuthService implements IUserAuthService {
     private generateOtp(): string {
         // return crypto.randomBytes(3).toString('hex').toUpperCase(); // uncomment this if you want to get in mail
-        return 'FED2CB'
+        return '101010'
     }
 
     async register(userData: UserRegisterRequestDTO): Promise<UserResponseDTO> {
@@ -23,6 +23,7 @@ export class UserAuthService implements IUserAuthService {
             const newUserData: any = {
                 name: userData.name,
                 email: userData.email,
+                password:'default001'
             };
 
             if (userData.password) {

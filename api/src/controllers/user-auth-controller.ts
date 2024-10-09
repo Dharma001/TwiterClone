@@ -8,8 +8,14 @@ import { ResponseHelper } from '../../helpers/response-helper';
 import { validateUserRegistration } from '../validations/register-validation';
 import { validateUserLogin } from '../validations/login-validation';
 import { container } from '../di/container';
+import axios from 'axios';
+import { PrismaClient } from '@prisma/client';
+import { sendMail } from '../services/email-service';
+import WebSocket from 'ws';
 import { UserOtpRequestDTO } from '../dtos/users/auth/otp-request-dto';
 import { validateUserOtp } from '../validations/otp-validation';
+
+const prisma = new PrismaClient();
 
 export class UserAuthController {
     private userAuthService: IUserAuthService;
@@ -18,6 +24,28 @@ export class UserAuthController {
     constructor() {
         this.userAuthService = container.get<IUserAuthService>('IUserAuthService');
         this.userService = container.get<IUserService>('IUserService');
+    }
+
+    async validateRegister(userData: UserRegisterRequestDTO, ws: WebSocket): Promise<void> {
+        const validation = await validateUserRegistration(userData, this.userService);
+        
+        if (!validation.valid) {
+            const validationErrors = validation.errors ?? {};
+            ws.send(JSON.stringify(ResponseHelper.validationError(validationErrors)));
+        } else {
+            ws.send(JSON.stringify(ResponseHelper.success({}, 'Validation successful')));
+        }
+    }
+
+    async validateOtp(otpData: UserOtpRequestDTO, ws: WebSocket): Promise<void> {
+        const validation = await validateUserOtp(otpData, this.userService);
+        
+        if (!validation.valid) {
+            const validationErrors = validation.errors ?? {};
+            ws.send(JSON.stringify(ResponseHelper.validationError(validationErrors)));
+        } else {
+            ws.send(JSON.stringify(ResponseHelper.success({}, 'Verified successfully')));
+        }
     }
 
     async register(req: Request, res: Response): Promise<void> {
@@ -42,6 +70,7 @@ export class UserAuthController {
 
     async verifyOtp(req: Request, res: Response): Promise<void> {
         const otpData: UserOtpRequestDTO = req.body;
+        console.log(otpData)
     
         const validation = await validateUserOtp(otpData, this.userService);
     
@@ -106,6 +135,5 @@ export class UserAuthController {
             console.error('User not authenticated');
             res.status(401).json(ResponseHelper.error('User not authenticated'));
         }
-    }
-    
+    }    
 }

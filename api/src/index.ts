@@ -9,11 +9,14 @@ import passport from './config/passport-setup';
 import routes from './routes';
 import { errorHandler } from './middleware/errorHandler';
 import { randomBytes } from 'crypto';
+import WebSocket from 'ws';
+import { setupWebSocket } from './websocket/websocket'; 
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const WS_PORT = process.env.WS_PORT || 5001;
 
 app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(bodyParser.json());
@@ -28,6 +31,9 @@ app.use((req: Request, res: Response) => {
 const generateSecretKey = () => {
     return randomBytes(32).toString('hex');
 };
+
+const wss = new WebSocket.Server({ port: 5001 });
+setupWebSocket(wss);
 
 const sessionMiddleware = session({
     secret: generateSecretKey(), // Use a strong secret key
