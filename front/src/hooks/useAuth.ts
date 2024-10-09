@@ -1,38 +1,65 @@
 import { useState } from 'react';
-import { loginUser, registerUser } from '../api/authApi';
+import { loginUser, registerUser, verifyOtp } from '../api/authApi';
+import { LoginResponse, RegisterResponse, OtpResponse } from '../interfaces/api/authResponse';
 import { toast } from 'react-toastify';
+
+export interface ServerError {
+    [key: string]: string[];
+}
 
 export const useAuth = () => {
     const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<ServerError | null>(null);
+    const handleResponse = <T extends { message: string }>(response: T) => {
+        toast.success(response.message);
+        return response;
+    };
 
-    const login = async (email: string, password: string) => {
+    const handleError = (err: any) => {
+        const errorMessage: ServerError = err?.response?.data?.errors || { general: ['An error occurred. Please try again.'] };
+        setError(errorMessage);
+        toast.error(errorMessage.general[0]);
+        return errorMessage;
+    };
+
+    const login = async (email: string, password: string): Promise<LoginResponse | void> => {
         setLoading(true);
         setError(null);
         try {
-            const data = await loginUser(email, password);
-            console.log(data)
-            toast(data.message);
-            return data; 
-        } catch {
-            setError('Login failed. Please check your credentials.');
+            const data: LoginResponse = await loginUser(email, password);
+            return handleResponse(data);
+        } catch (err) {
+            handleError(err);
         } finally {
             setLoading(false);
         }
     };
 
-    const register = async (name: string, email: string, password: string) => {
+    const authRegister = async (name: string, email: string): Promise<RegisterResponse | void> => {
         setLoading(true);
         setError(null);
         try {
-            const data = await registerUser(name, email, password);
-            return data; 
-        } catch {
-            setError('Registration failed. Please try again.');
+            const data: RegisterResponse = await registerUser(name, email);
+            return handleResponse(data);
+        } catch (err) {
+            handleError(err);
         } finally {
             setLoading(false);
         }
     };
 
-    return { login, register, loading, error };
+    const verifyOtpCode = async (otp: string, email: string): Promise<OtpResponse | void> => {
+        setLoading(true);
+        setError(null);
+        try {
+            const data: OtpResponse = await verifyOtp(otp, email);
+            return handleResponse(data);
+        } catch (err) {
+            handleError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { login, authRegister, verifyOtpCode, loading, error };
 };

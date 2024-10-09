@@ -5,9 +5,9 @@ import passport from '../config/passport-setup';
 const userAuthController = new UserAuthController();
 const router = Router();
 
-router.post('/register', userAuthController.register.bind(userAuthController));
-router.post('/verifyOtp', userAuthController.verifyOtp.bind(userAuthController));
 router.post('/login', userAuthController.login.bind(userAuthController));
+router.post('/register', userAuthController.register.bind(userAuthController));
+router.post('/verify-otp', userAuthController.verifyOtp.bind(userAuthController));
 
 router.get('/google', passport.authenticate('google', {
     scope: ['profile', 'email'],

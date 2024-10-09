@@ -16,23 +16,7 @@ const userRegisterSchema = Joi.object({
             'string.empty': '"email" cannot be an empty field',
             'string.email': '"email" must be a valid email',
             'any.required': '"email" is a required field',
-        }),
-    password: Joi.string()
-        .min(6)
-        .required()
-        .messages({
-            'string.base': '"password" should be a type of text',
-            'string.empty': '"password" cannot be an empty field',
-            'string.min': '"password" should have a minimum length of 6 characters',
-            'any.required': '"password" is a required field',
-        }),
-    confirmPassword: Joi.string()
-        .valid(Joi.ref('password'))
-        .required()
-        .messages({
-            'any.only': '"confirmPassword" must match "password"',
-            'any.required': '"confirmPassword" is a required field',
-        }),
+        })
 });
 
 /**
