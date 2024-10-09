@@ -16,7 +16,18 @@ const userRegisterSchema = Joi.object({
             'string.empty': '"email" cannot be an empty field',
             'string.email': '"email" must be a valid email',
             'any.required': '"email" is a required field',
-        })
+        }),
+    dob: Joi.date()
+        .greater('1-1-1900')
+        .less('now')
+        .required()
+        .messages({
+            'date.base': '"dob" should be a valid date',
+            'date.empty': '"dob" cannot be an empty field',
+            'date.greater': '"dob" must be a date after January 1, 1900',
+            'date.less': '"dob" must be a date in the past',
+            'any.required': '"dob" is a required field',
+        }),
 });
 
 /**

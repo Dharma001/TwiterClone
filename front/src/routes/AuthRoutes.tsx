@@ -3,8 +3,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 // import Home from '../pages/TwitterAuth';
 import Login from '../pages/Auth/Login';
-import Register from '../pages/Auth/RegisterForm';
-import Otp from '../pages/Auth/Otp';
+import Register from '../pages/Auth/AuthModal';
 
 const AppRoutes: React.FC = () => {
   return (
