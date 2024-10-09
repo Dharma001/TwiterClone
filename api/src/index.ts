@@ -9,11 +9,8 @@ import passport from './config/passport-setup';
 import routes from './routes';
 import { errorHandler } from './middleware/errorHandler';
 import { randomBytes } from 'crypto';
-<<<<<<< HEAD
 import WebSocket from 'ws';
 import { setupWebSocket } from './websocket/websocket'; 
-=======
->>>>>>> 7ea5e2c15d34d5d795a1b4dbcdfe5a998bdde8a8
 
 dotenv.config();
 
@@ -35,12 +32,9 @@ const generateSecretKey = () => {
     return randomBytes(32).toString('hex');
 };
 
-<<<<<<< HEAD
 const wss = new WebSocket.Server({ port: 5001 });
 setupWebSocket(wss);
 
-=======
->>>>>>> 7ea5e2c15d34d5d795a1b4dbcdfe5a998bdde8a8
 const sessionMiddleware = session({
     secret: generateSecretKey(), // Use a strong secret key
     resave: false,
