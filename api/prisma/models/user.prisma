@@ -11,5 +11,7 @@ model User {
   status          Int         @default(1)
   created_at      DateTime    @default(now())
   updated_at      DateTime    @updatedAt
+
+  socialAccounts       SocialAccount[]    @relation("UserSocialAccounts")
   @@map("users")
 }

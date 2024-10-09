@@ -1,10 +1,56 @@
-import React from 'react';
+import React , { useState} from 'react';
+import Register from './Auth/RegisterForm';
 
 const TwitterAuth: React.FC = () => {
 
-  const welcomeValue = localStorage.getItem('welcome');
+  const welcomeValue: string | null = localStorage.getItem('welcome');
 
-  const handleSetWelcome = () => {
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+
+  const handleOpenRegister = () => {
+    setIsRegisterOpen(true);
+  };
+
+  const handleCloseRegister = () => {
+    setIsRegisterOpen(false);
+  };
+
+  const handleGoogleLogin = () => {
+    const width = 500;
+    const height = 600;
+    const left = (window.innerWidth - width) / 2;
+    const top = (window.innerHeight - height) / 2;
+  
+    const popup = window.open(
+      'http://localhost:5000/api/auth/google',
+      'google-login',
+      `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
+    );
+  
+    const popupChecker = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(popupChecker);
+        console.log('Popup closed by user.');
+      }
+    }, 500);
+  
+    window.addEventListener('message', (event) => {
+      if (event.origin === 'http://localhost:5000') {
+        const { user } = event.data;
+  
+        if (user) {
+          console.log('User authenticated:', user);
+          
+          const token = user.token;
+          localStorage.setItem('token', token);
+
+          window.location.href = '/login';
+        }
+      }
+    });
+  };  
+  
+  const handleSetWelcome = (): void => {
     localStorage.setItem('welcome', 'true');
     window.location.reload(); 
   };
@@ -24,6 +70,7 @@ const TwitterAuth: React.FC = () => {
             fill="currentColor"
           />
         </g>
+
       </svg>
         </div>
         <div className="w-auto lg:w-[45%] flex items-center justify-center lg:justify-start">
@@ -34,7 +81,7 @@ const TwitterAuth: React.FC = () => {
             </div>
             <div className=" w-[85%] lg:w-[56%]">
             <div className=" mt-2 lg:mt-7 space-y-2">
-            <button className='flex items-center gap-[3.5px] bg-white w-full py-[8.5px] justify-center text-gray-700 text-[14px] font-medium rounded-3xl'>
+            <button   onClick={handleGoogleLogin} className='flex items-center gap-[3.5px] bg-white w-full py-[8.5px] justify-center text-gray-700 text-[14px] font-medium rounded-3xl'>
                 <img 
                   alt="" 
                   className='w-[20px] h-[20px]' 
@@ -56,9 +103,10 @@ const TwitterAuth: React.FC = () => {
               <p className='text-gray-300 font-medium text-[14px]'>or</p>
               <div className="w-1/2 border-b border-gray-800 h-1"></div>
             </div>
-            <button className='flex items-center text-white bg-[#1D9BF0] w-full py-[9px] justify-center text-[15px] font-bold rounded-3xl'>
+            <button onClick={handleOpenRegister}  className='flex items-center text-white bg-[#1D9BF0] w-full py-[9px] justify-center text-[15px] font-bold rounded-3xl'>
               Create account
             </button>
+            {isRegisterOpen && <Register onClose={handleCloseRegister} />}
               <p className='text-gray-500 ml-1 my-1.5 text-[11px]'>By signing up, you agree to the <span className='text-[#1D9BF0]'>Terms of Service</span> and <span className='text-[#1D9BF0]'>Privacy Policy</span> , including <span className='text-[#1D9BF0]'>Cookie Use</span>.</p>
               <div className="space-y-4">
                   <p className='text-white text-lg mt-14 font-semibold'>Already have an account?</p>

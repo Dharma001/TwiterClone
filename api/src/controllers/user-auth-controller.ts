@@ -84,4 +84,28 @@ export class UserAuthController {
             res.status(401).json(ResponseHelper.error('Invalid email or password.'));
         }
     }
+
+    async googleCallback(req: Request, res: Response): Promise<void> {
+        if (req.user) {
+            const { user } = req;
+    
+            try {
+                // Send a script that will send the user data (including token) back to the parent window and close the popup
+                res.send(`
+                    <script>
+                        const user = ${JSON.stringify(user)};
+                        window.opener.postMessage({ user }, '*');
+                        window.close();
+                    </script>
+                `);
+            } catch (error) {
+                console.error('Error during Google callback:', error);
+                res.status(500).json(ResponseHelper.error('Internal server error'));
+            }
+        } else {
+            console.error('User not authenticated');
+            res.status(401).json(ResponseHelper.error('User not authenticated'));
+        }
+    }
+    
 }

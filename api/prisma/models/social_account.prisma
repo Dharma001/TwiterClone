@@ -1,21 +1,3 @@
-
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
-}
-
-model Otp {
-  id              Int        @id @default(autoincrement())
-  email           String 
-  otp             String       
-  created_at      DateTime    @default(now())
-  @@map("otps")
-}
-
 model SocialAccount {
   id                Int      @id @default(autoincrement())
   user_id          Int
@@ -32,22 +14,3 @@ model SocialAccount {
   @@map("social_accounts") // Maps to the actual table name in the database
   @@unique([provider, provider_user_id]) // Unique constraint to prevent duplicates by provider and provider_user_id
 }
-
-model User {
-  id              Int        @id @default(autoincrement())
-  name            String
-  email           String     @unique
-  password        String
-  image           String?
-  email_verified_at DateTime?
-  phone           String? 
-  remember_token   String?
-  is_admin         Int         @default(0)
-  status          Int         @default(1)
-  created_at      DateTime    @default(now())
-  updated_at      DateTime    @updatedAt
-
-  socialAccounts       SocialAccount[]    @relation("UserSocialAccounts")
-  @@map("users")
-}
-

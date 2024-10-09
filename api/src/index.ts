@@ -2,10 +2,13 @@ import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import session from 'express-session';
 import { connectToDatabase, disconnectDatabase } from './utils/database';
 import http from 'http';
+import passport from './config/passport-setup';
 import routes from './routes';
 import { errorHandler } from './middleware/errorHandler';
+import { randomBytes } from 'crypto';
 
 dotenv.config();
 
@@ -22,6 +25,25 @@ app.use((req: Request, res: Response) => {
     res.status(404).json({ message: 'Not Found' });
 });
 
+const generateSecretKey = () => {
+    return randomBytes(32).toString('hex');
+};
+
+const sessionMiddleware = session({
+    secret: generateSecretKey(), // Use a strong secret key
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Set to true if using HTTPS
+        httpOnly: true, // Prevents JavaScript access to the cookie
+        sameSite: 'lax', // CSRF protection
+        maxAge: 1000 * 60 * 60, // Cookie expiration time (1 hour)
+    },
+});
+
+app.use(sessionMiddleware);
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(errorHandler);
 
 const startServer = async (): Promise<void> => {
