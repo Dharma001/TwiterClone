@@ -33,6 +33,7 @@ CREATE TABLE `users` (
     `password` VARCHAR(191) NOT NULL,
     `image` VARCHAR(191) NULL,
     `email_verified_at` DATETIME(3) NULL,
+    `dob` DATETIME(3) NULL,
     `phone` VARCHAR(191) NULL,
     `remember_token` VARCHAR(191) NULL,
     `is_admin` INTEGER NOT NULL DEFAULT 0,

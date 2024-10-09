@@ -8,14 +8,11 @@ import { ResponseHelper } from '../../helpers/response-helper';
 import { validateUserRegistration } from '../validations/register-validation';
 import { validateUserLogin } from '../validations/login-validation';
 import { container } from '../di/container';
-import axios from 'axios';
-import { PrismaClient } from '@prisma/client';
-import { sendMail } from '../services/email-service';
 import WebSocket from 'ws';
 import { UserOtpRequestDTO } from '../dtos/users/auth/otp-request-dto';
 import { validateUserOtp } from '../validations/otp-validation';
-
-const prisma = new PrismaClient();
+import { UserPasswordRequestDTO } from '../dtos/users/auth/user-password-dto';
+import { validateUserPassword } from '../validations/user-password-validation';
 
 export class UserAuthController {
     private userAuthService: IUserAuthService;
@@ -69,9 +66,7 @@ export class UserAuthController {
     }
 
     async verifyOtp(req: Request, res: Response): Promise<void> {
-        const otpData: UserOtpRequestDTO = req.body;
-        console.log(otpData)
-    
+        const otpData: UserOtpRequestDTO = req.body;    
         const validation = await validateUserOtp(otpData, this.userService);
     
         if (!validation.valid) {
@@ -89,6 +84,24 @@ export class UserAuthController {
         }
     }
 
+    async updatePassword(req: Request, res: Response): Promise<void> {
+        const userData: UserPasswordRequestDTO = req.body
+        const validation = await validateUserPassword(userData, this.userService)
+
+        if(!validation.valid){
+            const validationErrors = validation.errors ?? {};
+            res.status(400).json(ResponseHelper.validationError(validationErrors))
+        }
+
+        try {
+            const passwordData: string = await this.userAuthService.updatePassword(userData);
+            res.status(200).json(ResponseHelper.success({passwordData}, 'Password created successfully!'))
+        }catch(error){
+            console.log(`Error while creating a password: ${error}`)
+            res.status(400).json(ResponseHelper.error('Opps! Something went wrong '))
+        }
+    }
+    
     async login(req: Request, res: Response): Promise<void> {
         const loginData: UserLoginRequestDTO = req.body;
 
@@ -119,7 +132,6 @@ export class UserAuthController {
             const { user } = req;
     
             try {
-                // Send a script that will send the user data (including token) back to the parent window and close the popup
                 res.send(`
                     <script>
                         const user = ${JSON.stringify(user)};

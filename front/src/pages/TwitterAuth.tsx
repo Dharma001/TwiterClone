@@ -1,5 +1,5 @@
 import React , { useState} from 'react';
-import Register from './Auth/RegisterForm';
+import Register from './Auth/AuthModal';
 
 const TwitterAuth: React.FC = () => {
 

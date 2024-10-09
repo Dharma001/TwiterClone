@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 import { sendMail } from '../email-service';
 import crypto from 'crypto';
 import { UserOtpRequestDTO } from '../../dtos/users/auth/otp-request-dto';
+import { UserPasswordRequestDTO } from '../../dtos/users/auth/user-password-dto';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_key';
@@ -23,7 +24,8 @@ export class UserAuthService implements IUserAuthService {
             const newUserData: any = {
                 name: userData.name,
                 email: userData.email,
-                password:'default001'
+                password:'default001',
+                dob: userData.dob,
             };
 
             if (userData.password) {
@@ -84,6 +86,35 @@ export class UserAuthService implements IUserAuthService {
         } catch (error) {
             console.error('Error during OTP verification:', error);
             throw new Error('Unable to verify OTP. Please check your credentials and try again.');
+        }
+    }
+
+    async updatePassword(userData: UserPasswordRequestDTO): Promise<string> {
+        try {
+            const user = await prisma.user.findUnique({
+                where: {email: userData.email}
+            });
+
+            if(!user) {
+                throw new Error('Opps! something went wrong. please try again later!')
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            const newPassword = userData.password = await bcrypt.hash(userData.password, salt);
+
+            if(user){
+                await prisma.user.update({
+                    where: {email: userData.email},
+                    data: {
+                        password: newPassword
+                    }
+                })
+            }
+
+            return 'Your Password has been created!';
+        }catch(error){
+            console.log(`Error during updating password: ${error}`)
+            throw new Error('Unable to update the password. please try again later!')
         }
     }
 
