@@ -58,7 +58,7 @@ export class UserAuthService implements IUserAuthService {
 
     async verifyOtp(otpData: UserOtpRequestDTO): Promise<string> {
         try {
-            const otpEmail = await prisma.otp.findFirst({
+            const otpRecord = await prisma.otp.findFirst({
                 where: { email: otpData.email },
                 orderBy: { created_at: 'desc' },
             });
@@ -67,11 +67,11 @@ export class UserAuthService implements IUserAuthService {
                 where: { email: otpData.email },
             });
     
-            if (!otpEmail || !user) {
+            if (!otpRecord || !user) {
                 throw new Error('Invalid Credentials');
             }
     
-            if (otpEmail) {
+            if (otpRecord.otp === otpData.otp) {
                 await prisma.user.update({
                     where: { email: otpData.email },
                     data: {
