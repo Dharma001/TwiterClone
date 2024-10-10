@@ -1,6 +1,9 @@
 import Joi from 'joi';
 import { IUserService } from '../contracts/IUserService';
 import { UserOtpRequestDTO } from '../dtos/users/auth/otp-request-dto';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 const userOtpSchema = Joi.object({
     otp: Joi.string().length(6).required().messages({
@@ -45,6 +48,18 @@ export const validateUserOtp = async (dto: UserOtpRequestDTO, userService: IUser
         return {
             valid: false,
             errors: { email: ['Please enter a valid email address.'] },
+        };
+    }
+
+    const otpRecord = await prisma.otp.findFirst({
+        where: { email: dto.email },
+        orderBy: { created_at: 'desc' },
+    });
+
+    if (!otpRecord || otpRecord.otp !== dto.otp) {
+        return {
+            valid: false,
+            errors: { otp: ['Enter a valid otp!'] },
         };
     }
 
