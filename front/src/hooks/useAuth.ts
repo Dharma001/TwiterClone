@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { loginUser, registerUser, verifyOtp , createPassword } from '../api/authApi';
-import { LoginResponse, RegisterResponse, OtpResponse, PasswordResponse } from '../interfaces/api/authResponse';
+import { loginUser, registerUser, verifyOtp , createPassword, verifyUserExits } from '../api/authApi';
+import { LoginResponse, RegisterResponse, OtpResponse, PasswordResponse, VerifyUserEmailResponse } from '../interfaces/api/authResponse';
 import { toast } from 'react-toastify';
 
 export interface ServerError {
@@ -23,7 +23,7 @@ export const useAuth = () => {
         return errorMessage;
     };
 
-    const login = async (email: string, password: string): Promise<LoginResponse | void> => {
+    const authLogin = async (email: string, password: string): Promise<LoginResponse | void> => {
         setLoading(true);
         setError(null);
         try {
@@ -75,5 +75,17 @@ export const useAuth = () => {
         }
     }
 
-    return { login, authRegister, verifyOtpCode, passwordCreate, loading, error };
+    const VerifyUserEmailExists = async (email: string): Promise<VerifyUserEmailResponse | void> => {
+        setLoading(true);
+        setError(null);
+        try {
+            const data: VerifyUserEmailResponse = await verifyUserExits(email);
+            return handleResponse(data);
+        }catch(err) {
+            handleError(err);
+        }finally{
+            setLoading(false);
+        }
+    }
+    return { authLogin, authRegister, VerifyUserEmailExists, verifyOtpCode, passwordCreate, loading, error };
 };

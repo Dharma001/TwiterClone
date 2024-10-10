@@ -88,7 +88,7 @@ const AuthModal: React.FC = ({ onClose }) => {
     const passwordSuccess = await passwordCreate(email, data.password);
     resetPassword();
     if (passwordSuccess.statusCode === 200) {
-      navigate('/login');
+      navigate('/');
     }
   };
 
@@ -97,7 +97,7 @@ const AuthModal: React.FC = ({ onClose }) => {
   }
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-70 flex items-center justify-center">
-      <div className="bg-black text-white px-5 rounded-xl shadow-lg w-11/12 max-w-lg">
+      <div className="bg-black text-white px-2 lg:px-5 rounded-xl shadow-lg w-11/12 max-w-lg">
         <div className="relative">
           <button
             onClick={onClose}
@@ -119,7 +119,7 @@ const AuthModal: React.FC = ({ onClose }) => {
               </g>
             </svg>
           </div>
-          <div className="px-14 py-5">
+          <div className="px-9 lg:px-14 py-5">
             {isOtpVisible && !isCreatePasswordVisible ? (
               <>
               <div className="mb-5">
