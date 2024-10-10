@@ -1,11 +1,13 @@
 import React , { useState} from 'react';
 import Register from './Auth/AuthModal';
+import Login from './Auth/Login';
 
 const TwitterAuth: React.FC = () => {
 
   const welcomeValue: string | null = localStorage.getItem('welcome');
 
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   const handleOpenRegister = () => {
     setIsRegisterOpen(true);
@@ -13,6 +15,14 @@ const TwitterAuth: React.FC = () => {
 
   const handleCloseRegister = () => {
     setIsRegisterOpen(false);
+  };
+
+  const handleOpenLogin = () => {
+    setIsLoginOpen(true);
+  };
+
+  const handleCloseLogin = () => {
+    setIsLoginOpen(false);
   };
 
   const handleGoogleLogin = () => {
@@ -44,7 +54,7 @@ const TwitterAuth: React.FC = () => {
           const token = user.token;
           localStorage.setItem('token', token);
 
-          window.location.href = '/login';
+          window.location.href = '/';
         }
       }
     });
@@ -110,17 +120,17 @@ const TwitterAuth: React.FC = () => {
               <p className='text-gray-500 ml-1 my-1.5 text-[11px]'>By signing up, you agree to the <span className='text-[#1D9BF0]'>Terms of Service</span> and <span className='text-[#1D9BF0]'>Privacy Policy</span> , including <span className='text-[#1D9BF0]'>Cookie Use</span>.</p>
               <div className="space-y-4">
                   <p className='text-white text-lg mt-14 font-semibold'>Already have an account?</p>
-
-                  <button className='flex items-center border hover:bg-blue-100 hover:bg-opacity-5 border-gray-500 text-[#1D9BF0] w-full py-[7px] justify-center text-[15px] font-semibold rounded-3xl'>
+                  <button onClick={handleOpenLogin}  className='flex items-center border hover:bg-blue-100 hover:bg-opacity-5 border-gray-500 text-[#1D9BF0] w-full py-[7px] justify-center text-[15px] font-semibold rounded-3xl'>
                   Sign In
-                  </button>         
+                  </button>   
+                  {isLoginOpen && <Login onClose={handleCloseLogin} />}
               </div>
             </div>
             </div>
             </div>
             </div>
-            <div className="lg:absolute bottom-0 flex items-center justify-center lg:-z-1 lg:py-4 w-full bg-black text-gray-500">
-                  <p className="flex flex-wrap gap-4 px-7 lg:px-0 leading-[4px] text-[12.5px] lg:text-[13.5px] items-center justify-center">
+            <div className="lg:absolute bottom-0 flex items-center justify-center lg:-z-1 lg:py-4 w-full text-gray-500">
+                  <p className="flex flex-wrap gap-4 px-7 lg:px-0 leading-[4px] text-[12.5px] lg:text-[11px] items-center justify-center">
                     <span>About</span>
                     <span>Download the X app</span>
                     <span>Help Center</span>

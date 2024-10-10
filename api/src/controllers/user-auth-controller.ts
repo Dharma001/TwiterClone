@@ -13,6 +13,8 @@ import { UserOtpRequestDTO } from '../dtos/users/auth/otp-request-dto';
 import { validateUserOtp } from '../validations/otp-validation';
 import { UserPasswordRequestDTO } from '../dtos/users/auth/user-password-dto';
 import { validateUserPassword } from '../validations/user-password-validation';
+import { VerifyUserEmail } from '../dtos/users/auth/auth-verify-email';
+import { validateUserEmail } from '../validations/verify-email-validation';
 
 export class UserAuthController {
     private userAuthService: IUserAuthService;
@@ -63,6 +65,20 @@ export class UserAuthController {
             console.error('Error in register:', error);
             res.status(500).json(ResponseHelper.error('Unable to register user. Please try again later.'));
         }
+    }
+
+    async verifyUserExists(req: Request , res: Response): Promise<void> {
+        const email: VerifyUserEmail = req.body;
+
+        const validation = await validateUserEmail(email, this.userService);
+
+        if(!validation.valid){
+            const validationErrors = validation.errors ?? {}
+            res.status(400).json(ResponseHelper.validationError(validationErrors))
+            return;
+        }else [
+            res.status(201).json(ResponseHelper.success(email, 'user account found successfuly.'))
+        ]
     }
 
     async verifyOtp(req: Request, res: Response): Promise<void> {
