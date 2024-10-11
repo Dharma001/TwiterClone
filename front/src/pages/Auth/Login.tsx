@@ -42,6 +42,8 @@ const Login: React.FC = ({onClose}) => {
   const onLoginSubmit = async (data: LoginFormData) => {
     const loginSuccess = await authLogin(data.email, data.password);
     if (loginSuccess?.statusCode === 200) {
+      const token = loginSuccess?.data.token;
+      localStorage.setItem('token', token);
       navigate('/');
     }
   };
@@ -74,8 +76,6 @@ const Login: React.FC = ({onClose}) => {
         const { user } = event.data;
 
         if (user) {
-          console.log('User authenticated:', user);
-
           const token = user.token;
           localStorage.setItem('token', token);
 
